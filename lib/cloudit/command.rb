@@ -11,6 +11,8 @@ module Cloudit
       klass = "Cloudit::Command::#{command.capitalize}"
       instance = Object.const_get(klass).new(args)
       instance.execute
+    rescue NameError
+      $stdout.puts "cloudit: '#{command}' is not a cloudit command.\nSee 'cloudit --help' for usage."
     end
 
   end

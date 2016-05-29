@@ -18,7 +18,6 @@ class Cloudit::Command::Base
   def execute
     puts @method
 
-
     if @method.nil?
       index
     elsif self.class::VALID_METHODS.include?(@method)

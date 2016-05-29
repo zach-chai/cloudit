@@ -4,13 +4,24 @@ require 'yaml'
 require 'json'
 
 class Cloudit::Command::Generate < Cloudit::Command::Base
+  VALID_METHODS = ['help']
   SECTIONS = ['Metadata', 'Parameters', 'Mappings', 'Conditions', 'Resources', 'Outputs']
 
-  def generate
+  def index
+
+  end
+
+  def invalid_method
+    # TODO write method
+  end
+
+  private
+
+  def generate_json
     hash = {}
     hash_sections = {}
 
-    for file in Dir.glob(Dir["**/*.cfn.yml"]) do
+    for file in Dir.glob(Dir['**/*.cfn.yml']) do
       yml = YAML::load_file(file)
       if yml.is_a?(Hash)
         hash.merge! YAML::load_file(file)
@@ -32,6 +43,23 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
 
     hash.merge! hash_sections
 
-    puts hash.to_json
+    $stdout.puts hash.to_json
   end
+
+  def self.setup_options
+    opts = Slop::Options.new
+    opts.banner = 'usage: cloudit generate [options]'
+    opts.separator ''
+    opts.separator 'Generate options:'
+    opts.string '-o', '--output', 'a filename', default: 'out.json'
+    opts.separator ''
+    opts.separator 'Extra options:'
+    opts.bool '-v', '--verbose', 'enable verbose mode', default: false
+    opts.bool '-h', '--help', 'display generate options', default: false
+
+    self.slop_opts = opts
+    self.parser = Slop::Parser.new(opts)
+  end
+
+  setup_options
 end

@@ -8,8 +8,9 @@ module Cloudit
     end
 
     def self.run(command, args)
-      command_instance = Object.const_get(command).new(args)
-      command_instance.generate
+      klass = "Cloudit::Command::#{command.capitalize}"
+      instance = Object.const_get(klass).new(args)
+      instance.execute
     end
 
   end

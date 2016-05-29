@@ -1,3 +1,5 @@
+require 'cloudit/command'
+
 module Cloudit
   class CLI
 
@@ -6,8 +8,11 @@ module Cloudit
       $stdout.sync = true if $stdout.isatty
 
       command = args.shift.strip rescue "help"
-      
+
       $stdout.puts command
+
+      Cloudit::Command.load
+      Cloudit::Command.run(command, args)
     end
   end
 end

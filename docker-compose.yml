@@ -1,0 +1,8 @@
+version: '2'
+services:
+  gem:
+    build: .
+    volumes:
+      - .:/usr/src/cloudit
+    working_dir: "/usr/src/cloudit"
+    command: bash

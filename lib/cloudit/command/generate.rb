@@ -8,11 +8,12 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
   SECTIONS = ['Metadata', 'Parameters', 'Mappings', 'Conditions', 'Resources', 'Outputs']
 
   def index
-
+    generate_json
   end
 
   def invalid_method
     # TODO write method
+    help
   end
 
   private

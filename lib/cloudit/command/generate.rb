@@ -8,7 +8,11 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
   SECTIONS = ['Metadata', 'Parameters', 'Mappings', 'Conditions', 'Resources', 'Outputs']
 
   def index
-    generate_json
+    if @opts.help?
+      $stdout.puts slop_opts
+    else
+      generate_json
+    end
   end
 
   def invalid_method
@@ -53,9 +57,6 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     opts.separator ''
     opts.separator 'Generate options:'
     opts.string '-o', '--output', 'a filename', default: 'out.json'
-    opts.separator ''
-    opts.separator 'Extra options:'
-    opts.bool '-v', '--verbose', 'enable verbose mode', default: false
     opts.bool '-h', '--help', 'print options', default: false
 
     self.slop_opts = opts

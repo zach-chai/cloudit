@@ -6,6 +6,8 @@ class Cloudit::Command::Base
     attr_accessor :parser, :slop_opts
   end
 
+  VALID_METHODS = []
+
   def initialize(args=[])
     @method = if args[0].is_a?(String) && args[0].include?('-')
       nil

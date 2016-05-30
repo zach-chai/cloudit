@@ -49,14 +49,14 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
 
   def self.setup_options
     opts = Slop::Options.new
-    opts.banner = 'usage: cloudit generate [options]'
+    opts.banner = 'Usage: cloudit generate [options]'
     opts.separator ''
     opts.separator 'Generate options:'
     opts.string '-o', '--output', 'a filename', default: 'out.json'
     opts.separator ''
     opts.separator 'Extra options:'
     opts.bool '-v', '--verbose', 'enable verbose mode', default: false
-    opts.bool '-h', '--help', 'display generate options', default: false
+    opts.bool '-h', '--help', 'print options', default: false
 
     self.slop_opts = opts
     self.parser = Slop::Parser.new(opts)

@@ -29,6 +29,10 @@ class Cloudit::Command::Base
     end
   end
 
+  def invalid_method
+    $stdout.puts "cloudit: '#{@method}' is not a cloudit command\nSee 'cloudit --help'"
+  end
+
   def help
     $stdout.puts slop_opts
   end

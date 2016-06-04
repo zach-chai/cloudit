@@ -15,11 +15,6 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     end
   end
 
-  def invalid_method
-    # TODO write method
-    help
-  end
-
   private
 
   def generate_json

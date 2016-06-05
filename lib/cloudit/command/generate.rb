@@ -6,6 +6,9 @@ require 'json'
 class Cloudit::Command::Generate < Cloudit::Command::Base
   VALID_METHODS = ['help']
   SECTIONS = ['Metadata', 'Parameters', 'Mappings', 'Conditions', 'Resources', 'Outputs']
+  DEFAULT_OUT_FILE = 'out.json'
+  DEFAULT_MAIN_CFN_EXTENSION = 'cfn.yml'
+  DEFAULT_DIRECTORY = './'
 
   def index
     if @opts.help?
@@ -20,8 +23,28 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
   def generate_json
     hash = {}
     hash_sections = {}
+    out = @opts[:output]
+    dir = normalize_directory @opts[:directory]
 
-    for file in Dir.glob(Dir['**/*.cfn.yml']) do
+    if File.exist? out
+      if out.eql? DEFAULT_OUT_FILE
+        i = 1
+        while File.exist? out
+          i += 1
+          out = "out#{i}.json"
+        end
+      else
+        $stdout.puts "cloudit: output file '#{out}' already exists"
+        return
+      end
+    end
+
+    unless File.directory? dir
+      $stdout.puts "cloudit: '#{dir}' must be a directory"
+      return
+    end
+
+    for file in Dir.glob(Dir["#{dir}**/*.#{DEFAULT_MAIN_CFN_EXTENSION}"]) do
       yml = YAML::load_file(file)
       if yml.is_a?(Hash)
         hash.merge! YAML::load_file(file)
@@ -32,7 +55,7 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
       section_file = section.downcase
       hash_sections[section] = {}
 
-      for file in Dir.glob(Dir["**/*.#{section_file}.yml"]) do
+      for file in Dir.glob(Dir["#{dir}**/*.#{section_file}.yml"]) do
         yml = YAML::load_file(file)
 
         if yml.is_a?(Hash)
@@ -44,6 +67,15 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     hash.merge! hash_sections
 
     $stdout.puts hash.to_json
+    File.new(out, 'w').write "#{hash.to_json}\n"
+  end
+
+  def normalize_directory(dir)
+    if dir.end_with? '/'
+      dir
+    else
+      dir + '/'
+    end
   end
 
   def self.setup_options
@@ -51,8 +83,9 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     opts.banner = 'Usage: cloudit generate [options]'
     opts.separator ''
     opts.separator 'Generate options:'
-    opts.string '-o', '--output', 'a filename', default: 'out.json'
+    opts.string '-o', '--output', 'output filename', default: DEFAULT_OUT_FILE
     opts.bool '-h', '--help', 'print options', default: false
+    opts.string '-d', '--directory', 'root directory to generate', default: DEFAULT_DIRECTORY
 
     self.slop_opts = opts
     self.parser = Slop::Parser.new(opts)

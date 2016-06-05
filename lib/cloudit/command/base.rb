@@ -7,6 +7,7 @@ class Cloudit::Command::Base
   end
 
   VALID_METHODS = []
+  OPTION_NAME_OFFSET = 6
 
   def initialize(args=[])
     @method = if args[0].is_a?(String) && args[0].include?('-')

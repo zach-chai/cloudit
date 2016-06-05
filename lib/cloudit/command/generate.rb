@@ -6,6 +6,7 @@ require 'json'
 class Cloudit::Command::Generate < Cloudit::Command::Base
   VALID_METHODS = ['help']
   SECTIONS = ['Metadata', 'Parameters', 'Mappings', 'Conditions', 'Resources', 'Outputs']
+  DESCRIPTION = 'Build YAML files into Cloudformation template'
   DEFAULT_OUT_FILE = 'out.json'
   DEFAULT_MAIN_CFN_EXTENSION = 'cfn.yml'
   DEFAULT_DIRECTORY = './'

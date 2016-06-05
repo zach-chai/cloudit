@@ -1,21 +1,23 @@
 require 'slop'
-require 'byebug'
 
 class Cloudit::Command::Base
   class << self
     attr_accessor :parser, :slop_opts
   end
 
+  attr_accessor :commands
+
   VALID_METHODS = []
   OPTION_NAME_OFFSET = 6
 
-  def initialize(args=[])
+  def initialize(args=[], commands)
     @method = if args[0].is_a?(String) && args[0].include?('-')
       nil
     else
       args.shift.strip rescue nil
     end
     @opts = parser.parse(args)
+    @commands = commands
   end
 
   def execute

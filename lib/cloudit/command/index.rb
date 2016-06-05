@@ -1,16 +1,7 @@
 require 'cloudit/version'
 require 'cloudit/command/base'
 
-require 'byebug'
-
 class Cloudit::Command::Index < Cloudit::Command::Base
-  class << self
-    attr_accessor :usage
-  end
-
-  def usage
-    self.class.usage
-  end
 
   def index
     if @opts.version?
@@ -25,12 +16,14 @@ class Cloudit::Command::Index < Cloudit::Command::Base
 
   private
 
-  def self.build_usage
+  def usage
     str = slop_opts.to_s
-    Cloudit::Command.commands.each do |command|
-      str += command
+    str += "\nCommands:"
+    Cloudit::Command.descriptions.each do |command|
+      str += "\n#{command[:command]}  #{command[:description]}"
     end
-    self.usage = str
+    str += "\n\nRun 'cloudit COMMAND --help' for more information on a command."
+    str
   end
 
   def self.setup_options
@@ -46,5 +39,4 @@ class Cloudit::Command::Index < Cloudit::Command::Base
   end
 
   setup_options
-  build_usage
 end

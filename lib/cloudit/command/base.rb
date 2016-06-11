@@ -1,3 +1,4 @@
+require 'cloudit/config'
 require 'slop'
 
 class Cloudit::Command::Base

@@ -5,19 +5,16 @@ class Cloudit::Command::Base
     attr_accessor :parser, :slop_opts
   end
 
-  attr_accessor :commands
-
   VALID_METHODS = []
   OPTION_NAME_OFFSET = 6
 
-  def initialize(args=[], commands)
+  def initialize(args=[])
     @method = if args[0].is_a?(String) && args[0].include?('-')
       nil
     else
       args.shift.strip rescue nil
     end
     @opts = parser.parse(args)
-    @commands = commands
   end
 
   def execute

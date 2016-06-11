@@ -15,30 +15,31 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     if @opts.help?
       $stdout.puts slop_opts
     else
-      generate_json
+      out = @opts[:output]
+      dir = normalize_directory @opts[:directory]
+
+      if File.exist? out
+        if out.eql? DEFAULT_OUT_FILE
+          i = 1
+          while File.exist? out
+            i += 1
+            out = "out#{i}.json"
+          end
+        else
+          $stdout.puts "cloudit: output file '#{out}' already exists"
+          return
+        end
+      end
+
+      json = generate_json(dir)
+      $stdout.puts json
+      File.new(out, 'w').write "#{json}\n"
     end
   end
 
-  private
-
-  def generate_json
+  def generate_json(dir='.')
     hash = {}
     hash_sections = {}
-    out = @opts[:output]
-    dir = normalize_directory @opts[:directory]
-
-    if File.exist? out
-      if out.eql? DEFAULT_OUT_FILE
-        i = 1
-        while File.exist? out
-          i += 1
-          out = "out#{i}.json"
-        end
-      else
-        $stdout.puts "cloudit: output file '#{out}' already exists"
-        return
-      end
-    end
 
     unless File.directory? dir
       $stdout.puts "cloudit: '#{dir}' must be a directory"
@@ -48,7 +49,7 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     for file in Dir.glob(Dir["#{dir}**/*.#{DEFAULT_MAIN_CFN_EXTENSION}"]) do
       yml = YAML::load_file(file)
       if yml.is_a?(Hash)
-        hash.merge! YAML::load_file(file)
+        hash.merge! yml
       end
     end
 
@@ -67,9 +68,10 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
 
     hash.merge! hash_sections
 
-    $stdout.puts hash.to_json
-    File.new(out, 'w').write "#{hash.to_json}\n"
+    hash.to_json
   end
+
+  private
 
   def normalize_directory(dir)
     if dir.end_with? '/'

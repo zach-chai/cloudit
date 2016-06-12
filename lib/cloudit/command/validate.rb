@@ -10,7 +10,7 @@ class Cloudit::Command::Validate < Cloudit::Command::Base
     if @opts.help?
       $stdout.puts slop_opts
     else
-      validate_template
+      validate_template @opts[:region]
     end
   end
 
@@ -35,6 +35,7 @@ class Cloudit::Command::Validate < Cloudit::Command::Base
     opts.banner = 'Usage: cloudit validate'
     opts.separator ''
     opts.separator 'Validate options:'
+    opts.string '-r', '--region', 'region used for validation'
     opts.bool '-h', '--help', 'print usage', default: false
 
     self.slop_opts = opts

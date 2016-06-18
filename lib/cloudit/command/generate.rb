@@ -9,7 +9,6 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
   DESCRIPTION = 'Build YAML files into Cloudformation template'
   DEFAULT_OUT_FILE = 'out.json'
   DEFAULT_MAIN_CFN_EXTENSION = 'cfn.yml'
-  DEFAULT_DIRECTORY = './'
 
   def index
     if @opts.help?
@@ -38,7 +37,7 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     end
   end
 
-  def generate_json(dir='.')
+  def generate_json(dir='./')
     hash = {}
     hash_sections = {}
 

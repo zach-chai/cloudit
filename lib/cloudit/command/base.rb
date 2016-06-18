@@ -8,6 +8,7 @@ class Cloudit::Command::Base
 
   VALID_METHODS = []
   OPTION_NAME_OFFSET = 6
+  DEFAULT_DIRECTORY = './'
 
   def initialize(args=[])
     @method = if args[0].is_a?(String) && args[0].include?('-')

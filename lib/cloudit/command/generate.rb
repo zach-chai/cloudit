@@ -32,8 +32,9 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
       end
 
       json = generate_json(dir)
-      $stdout.puts json
       File.new(out, 'w').write "#{json}\n"
+
+      $stdout.puts "Template generated to #{out}"
     end
   end
 

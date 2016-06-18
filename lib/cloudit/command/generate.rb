@@ -16,6 +16,7 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     else
       out = @opts[:output]
       dir = normalize_directory @opts[:directory]
+      min = @opts[:minify]
 
       if File.exist? out
         if out.eql? DEFAULT_OUT_FILE
@@ -30,14 +31,14 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
         end
       end
 
-      json = generate_json(dir)
+      json = generate_json dir, min
       File.new(out, 'w').write "#{json}\n"
 
       $stdout.puts "Template generated to #{out}"
     end
   end
 
-  def generate_json(dir='./')
+  def generate_json(dir='./', min=false)
     hash = {}
     hash_sections = {}
 
@@ -68,7 +69,11 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
 
     hash.merge! hash_sections
 
-    hash.to_json
+    if min
+      hash.to_json
+    else
+      JSON.pretty_generate hash
+    end
   end
 
   private
@@ -89,6 +94,7 @@ class Cloudit::Command::Generate < Cloudit::Command::Base
     opts.string '-o', '--output', 'output filename', default: DEFAULT_OUT_FILE
     opts.bool '-h', '--help', 'print options', default: false
     opts.string '-d', '--directory', 'root directory to generate', default: DEFAULT_DIRECTORY
+    opts.bool '-m', '--minify', 'minify JSON output', default: false
 
     self.slop_opts = opts
     self.parser = Slop::Parser.new(opts)
